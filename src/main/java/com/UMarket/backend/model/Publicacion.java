@@ -1,8 +1,10 @@
 package com.UMarket.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,6 +40,12 @@ public class Publicacion {
     private Usuario vendedor;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id", nullable = false)
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    // Ignorar la referencia circular al serializar a JSON
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orden ASC")
+    @JsonIgnoreProperties("publicacion")
+    private List<ImagenPublicacion> imagenes;
 }
