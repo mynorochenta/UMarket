@@ -27,8 +27,11 @@ public class CloudinaryService {
     }
 
     public String subirImagen(MultipartFile archivo) throws IOException {
+        String contentType = archivo.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Solo se permiten archivos de imagen");
+        }
 
-        // Subir la imagen a Cloudinary
         Map resultado = cloudinary.uploader().upload(
                 archivo.getBytes(),
                 ObjectUtils.asMap(

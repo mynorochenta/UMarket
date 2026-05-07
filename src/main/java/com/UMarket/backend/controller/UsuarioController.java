@@ -5,13 +5,13 @@ import com.UMarket.backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     @Autowired
@@ -29,7 +29,6 @@ public class UsuarioController {
     }
 
     // GET /api/usuarios/verificar?token=abc123
-    // Este es el enlace que llega al correo del estudiante
     @GetMapping("/verificar")
     public ResponseEntity<?> verificarEmail(@RequestParam String token) {
         try {
@@ -58,6 +57,11 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Usuario datos) {
         try {
+            Long idAutenticado = getIdAutenticado();
+            if (!idAutenticado.equals(id)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para modificar este usuario");
+            }
             return ResponseEntity.ok(usuarioService.actualizar(id, datos));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -68,10 +72,22 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> desactivar(@PathVariable Long id) {
         try {
+            Long idAutenticado = getIdAutenticado();
+            if (!idAutenticado.equals(id)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para desactivar este usuario");
+            }
             usuarioService.desactivar(id);
             return ResponseEntity.ok("Usuario desactivado correctamente");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    private Long getIdAutenticado() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioService.obtenerPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado"))
+                .getId();
     }
 }

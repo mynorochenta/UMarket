@@ -5,8 +5,11 @@ import com.UMarket.backend.model.Publicacion;
 import com.UMarket.backend.repository.ImagenPublicacionRepository;
 import com.UMarket.backend.repository.PublicacionRepository;
 import com.UMarket.backend.service.CloudinaryService;
+import com.UMarket.backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/imagenes")
-@CrossOrigin(origins = "*")
 public class ImagenController {
 
     @Autowired
@@ -26,6 +28,9 @@ public class ImagenController {
 
     @Autowired
     private PublicacionRepository publicacionRepository;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     // POST /api/imagenes/subir — sube una sola imagen y devuelve el URL
     @PostMapping("/subir")
@@ -47,6 +52,12 @@ public class ImagenController {
             Publicacion publicacion = publicacionRepository.findById(publicacionId)
                     .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
 
+            Long idAutenticado = getIdAutenticado();
+            if (!publicacion.getVendedor().getId().equals(idAutenticado)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("No tienes permiso para subir imágenes a esta publicación");
+            }
+
             if (archivos.size() > 5) {
                 return ResponseEntity.badRequest().body("Máximo 5 imágenes por publicación");
             }
@@ -66,8 +77,17 @@ public class ImagenController {
 
             return ResponseEntity.ok(imagenesGuardadas);
 
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al subir imágenes: " + e.getMessage());
         }
+    }
+
+    private Long getIdAutenticado() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioService.obtenerPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado"))
+                .getId();
     }
 }

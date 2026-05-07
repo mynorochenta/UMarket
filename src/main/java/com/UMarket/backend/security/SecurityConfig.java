@@ -42,9 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/usuarios/registro",
                                 "/api/usuarios/verificar",
-                                "/api/auth/login",
-                                "/api/imagenes/subir",
-                                "/api/imagenes/publicacion/**"
+                                "/api/auth/login"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

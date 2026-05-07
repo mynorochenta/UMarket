@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -41,10 +40,16 @@ public class AuthController {
             Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                     .orElseThrow();
 
-            // 3. Generar el token JWT
+            // 3. Verificar que el correo haya sido confirmado
+            if (!usuario.isVerificado()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Debes verificar tu correo antes de iniciar sesión");
+            }
+
+            // 4. Generar el token JWT
             String token = jwtUtil.generarToken(request.getEmail());
 
-            // 4. Devolver el token junto con datos básicos del usuario
+            // 5. Devolver el token junto con datos básicos del usuario
             return ResponseEntity.ok(new LoginResponse(token, usuario.getEmail(), usuario.getId()));
 
         } catch (BadCredentialsException e) {

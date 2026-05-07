@@ -2,6 +2,7 @@ package com.UMarket.backend.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -10,12 +11,13 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Clave secreta para firmar los tokens — en producción esto va en variables de entorno
-    private static final String SECRET = "umarket-clave-secreta-super-larga-para-que-sea-segura-2024";
+    @Value("${jwt.secret}")
+    private String secret;
+
     private static final long EXPIRACION_MS = 86400000; // 24 horas en milisegundos
 
     private Key getKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     // Genera un token JWT para un email dado

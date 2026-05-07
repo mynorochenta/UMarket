@@ -14,9 +14,6 @@ import java.util.Optional;
 @Service
 public class PublicacionService {
 
-    // Constante del modelo freemium — fácil de cambiar después
-    private static final int PUBLICACIONES_GRATIS = 3;
-
     @Autowired
     private PublicacionRepository publicacionRepository;
 
@@ -30,22 +27,10 @@ public class PublicacionService {
         Usuario vendedor = usuarioRepository.findById(vendedorId)
                 .orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
 
-        // REGLA DE NEGOCIO #1: El vendedor debe estar verificado
         if (!vendedor.isVerificado()) {
             throw new RuntimeException("Debes verificar tu correo antes de publicar");
         }
 
-        // REGLA DE NEGOCIO #2: Modelo freemium
-        long publicacionesActivas = publicacionRepository.countByVendedorAndActivoTrue(vendedor);
-        if (publicacionesActivas >= PUBLICACIONES_GRATIS) {
-            // Aquí en el futuro conectarás el sistema de pagos
-            throw new RuntimeException(
-                    "Alcanzaste el límite gratuito de " + PUBLICACIONES_GRATIS +
-                            " publicaciones. Próximamente podrás publicar más con UMarket Premium."
-            );
-        }
-
-        // REGLA DE NEGOCIO #3: El precio debe ser positivo
         if (publicacion.getPrecio() <= 0) {
             throw new RuntimeException("El precio debe ser mayor a Q0.00");
         }

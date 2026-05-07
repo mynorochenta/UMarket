@@ -15,9 +15,12 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String emailRemitente;
 
+    @Value("${app.url}")
+    private String appUrl;
+
     public void enviarEmailVerificacion(String emailDestino, String token) {
 
-        String enlace = "http://localhost:8080/api/usuarios/verificar?token=" + token;
+        String enlace = appUrl + "/api/usuarios/verificar?token=" + token;
 
         SimpleMailMessage mensaje = new SimpleMailMessage();
         mensaje.setFrom(emailRemitente);

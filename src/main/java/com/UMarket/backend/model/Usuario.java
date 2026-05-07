@@ -1,5 +1,6 @@
 package com.UMarket.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String contrasena;
 
@@ -35,11 +37,11 @@ public class Usuario {
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 
     // ─── Verificación de correo ──────────────────────────────
-    // Token único que se envía al correo del estudiante
+    @JsonIgnore
     @Column
     private String tokenVerificacion;
 
-    // El token expira en 24 horas por seguridad
+    @JsonIgnore
     @Column
     private LocalDateTime fechaExpiracionToken;
 }

@@ -2,27 +2,30 @@ package com.UMarket.backend.controller;
 
 import com.UMarket.backend.model.Publicacion;
 import com.UMarket.backend.service.PublicacionService;
+import com.UMarket.backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/publicaciones")
-@CrossOrigin(origins = "*")
 public class PublicacionController {
 
     @Autowired
     private PublicacionService publicacionService;
 
-    // POST /api/publicaciones?vendedorId=1
+    @Autowired
+    private UsuarioService usuarioService;
+
+    // POST /api/publicaciones
     @PostMapping
-    public ResponseEntity<?> crear(
-            @RequestBody Publicacion publicacion,
-            @RequestParam Long vendedorId) {
+    public ResponseEntity<?> crear(@RequestBody Publicacion publicacion) {
         try {
+            Long vendedorId = getIdAutenticado();
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(publicacionService.crear(publicacion, vendedorId));
         } catch (RuntimeException e) {
@@ -57,16 +60,22 @@ public class PublicacionController {
         return ResponseEntity.ok(publicacionService.buscar(termino));
     }
 
-    // DELETE /api/publicaciones/1?vendedorId=1
+    // DELETE /api/publicaciones/1
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> desactivar(
-            @PathVariable Long id,
-            @RequestParam Long vendedorId) {
+    public ResponseEntity<?> desactivar(@PathVariable Long id) {
         try {
+            Long vendedorId = getIdAutenticado();
             publicacionService.desactivar(id, vendedorId);
             return ResponseEntity.ok("Publicación desactivada correctamente");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    private Long getIdAutenticado() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioService.obtenerPorEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado"))
+                .getId();
     }
 }

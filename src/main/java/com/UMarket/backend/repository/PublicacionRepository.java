@@ -23,12 +23,7 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
     // Esto alimentará la barra de búsqueda del feed
     List<Publicacion> findByTituloContainingIgnoreCaseAndActivoTrue(String titulo);
 
-    // Contar cuántas publicaciones activas tiene un vendedor
-    // ← CLAVE para el modelo freemium: primeras 3 gratis
-    long countByVendedorAndActivoTrue(Usuario vendedor);
-
     // Query personalizada — publicaciones activas ordenadas por fecha (más recientes primero)
-    // Esto es el feed principal que verán los estudiantes
     @Query("SELECT p FROM Publicacion p WHERE p.activo = true ORDER BY p.fechaPublicacion DESC")
     List<Publicacion> findFeedPrincipal();
 }
