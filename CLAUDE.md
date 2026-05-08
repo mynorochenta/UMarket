@@ -73,3 +73,11 @@ All credentials are in `application.properties` (not committed-safe; treated as 
 - **Cloudinary**: image hosting — `CloudinaryService.subirImagen()` validates `image/*` content type before upload.
 - **Gmail SMTP**: for verification emails — base URL configured via `app.url` property, consumed in `EmailService`.
 - **JWT secret**: `jwt.secret` property, consumed via `@Value` in `JwtUtil`.
+
+## Idioma
+Responde siempre en español.
+
+## Contexto del proyecto
+UMarket es un marketplace exclusivo para estudiantes universitarios guatemaltecos.
+La verificación de email .edu es el diferenciador principal — genera confianza entre compradores y vendedores.
+El modelo de monetización está pendiente de definir, no implementar nada al respecto por ahora.

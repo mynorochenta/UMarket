@@ -32,17 +32,6 @@ public class ImagenController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // POST /api/imagenes/subir — sube una sola imagen y devuelve el URL
-    @PostMapping("/subir")
-    public ResponseEntity<?> subirImagen(@RequestParam("archivo") MultipartFile archivo) {
-        try {
-            String url = cloudinaryService.subirImagen(archivo);
-            return ResponseEntity.ok(url);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al subir la imagen: " + e.getMessage());
-        }
-    }
-
     // POST /api/imagenes/publicacion/{id} — sube múltiples imágenes a una publicación
     @PostMapping("/publicacion/{publicacionId}")
     public ResponseEntity<?> subirImagenesPublicacion(

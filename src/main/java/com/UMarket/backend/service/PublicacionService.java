@@ -50,7 +50,7 @@ public class PublicacionService {
     }
 
     public Optional<Publicacion> obtenerPorId(Long id) {
-        return publicacionRepository.findById(id);
+        return publicacionRepository.findById(id).filter(Publicacion::isActivo);
     }
 
     public List<Publicacion> obtenerPorVendedor(Long vendedorId) {

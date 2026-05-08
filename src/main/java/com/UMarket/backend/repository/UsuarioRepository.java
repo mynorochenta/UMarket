@@ -4,6 +4,7 @@ import com.UMarket.backend.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,4 +18,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Buscar usuario por token de verificación — para confirmar el correo
     Optional<Usuario> findByTokenVerificacion(String token);
+
+    // Solo usuarios activos — para el listado público
+    List<Usuario> findAllByActivoTrue();
 }

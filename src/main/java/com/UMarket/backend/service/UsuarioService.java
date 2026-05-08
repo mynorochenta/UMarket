@@ -3,12 +3,13 @@ package com.UMarket.backend.service;
 import com.UMarket.backend.model.Usuario;
 import com.UMarket.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -20,7 +21,8 @@ public class UsuarioService {
     @Autowired
     private EmailService emailService;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // ─── REGISTRO ───────────────────────────────────────────────
 
@@ -85,42 +87,36 @@ public class UsuarioService {
 
     // ─── VALIDACIÓN .EDU ────────────────────────────────────────
 
+    private static final Set<String> DOMINIOS_PERMITIDOS = Set.of(
+            "usac.edu.gt",
+            "galileo.edu",
+            "uvg.edu.gt",
+            "ufm.edu",
+            "umg.edu.gt",
+            "miumg.edu.gt",
+            "url.edu.gt",
+            "unis.edu.gt",
+            "umes.edu.gt",
+            "upana.edu.gt",
+            "uni.edu.gt",
+            "urural.edu.gt",
+            "usanpablo.edu.gt",
+            "udavinci.edu.gt",
+            "udeo.edu.gt",
+            "ureg.edu.gt"
+    );
+
     private boolean esEmailEducativo(String email) {
-        if (email == null) return false;
-
-        String[] dominiosPermitidos = {
-                "usac.edu.gt",       // Universidad de San Carlos de Guatemala
-                "galileo.edu",       // Universidad Galileo
-                "uvg.edu.gt",        // Universidad del Valle de Guatemala
-                "ufm.edu",           // Universidad Francisco Marroquín
-                "umg.edu.gt",        // Universidad Mariano Gálvez
-                "miumg.edu.gt",      // Universidad Mariano Gálvez (sistema nuevo)
-                "url.edu.gt",        // Universidad Rafael Landívar
-                "unis.edu.gt",       // Universidad del Istmo
-                "umes.edu.gt",       // Universidad Mesoamericana
-                "upana.edu.gt",      // Universidad Panamericana
-                "uni.edu.gt",        // Universidad InterNaciones
-                "urural.edu.gt",     // Universidad Rural
-                "usanpablo.edu.gt",  // Universidad de San Pablo
-                "udavinci.edu.gt",   // Universidad Da Vinci
-                "udeo.edu.gt",       // Universidad de Occidente
-                "ureg.edu.gt",       // Universidad Regional
-
-        };
-
-        String emailLower = email.toLowerCase();
-        for (String dominio : dominiosPermitidos) {
-            if (emailLower.endsWith(dominio)) {
-                return true;
-            }
-        }
-        return false;
+        if (email == null || !email.contains("@")) return false;
+        // Comparación exacta del dominio — evita bypass con dominios como "fakegalileo.edu"
+        String dominio = email.toLowerCase().substring(email.lastIndexOf("@") + 1);
+        return DOMINIOS_PERMITIDOS.contains(dominio);
     }
 
     // ─── CONSULTAS ──────────────────────────────────────────────
 
     public List<Usuario> obtenerTodos() {
-        return usuarioRepository.findAll();
+        return usuarioRepository.findAllByActivoTrue();
     }
 
     public Optional<Usuario> obtenerPorId(Long id) {
