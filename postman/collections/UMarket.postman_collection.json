@@ -1,0 +1,473 @@
+{
+  "info": {
+    "name": "UMarket API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "    console.log('Token guardado:', json.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"tu_correo@usac.edu.gt\",\n  \"contrasena\": \"tu_contrasena\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Devuelve un JWT que se guarda automáticamente en la variable {{token}}."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tu Nombre\",\n  \"email\": \"tu_correo@usac.edu.gt\",\n  \"contrasena\": \"tu_contrasena\",\n  \"universidad\": \"Universidad de San Carlos de Guatemala\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/registro",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "registro"]
+            },
+            "description": "Endpoint público. Envía un correo de verificación al email indicado."
+          }
+        },
+        {
+          "name": "Verificar email",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/verificar?token=PEGA_AQUI_EL_TOKEN",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "verificar"],
+              "query": [{ "key": "token", "value": "PEGA_AQUI_EL_TOKEN" }]
+            },
+            "description": "Endpoint público. El token llega por correo."
+          }
+        },
+        {
+          "name": "Obtener todos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios"]
+            }
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar mi cuenta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Nuevo Nombre\",\n  \"universidad\": \"Universidad Galileo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "1"]
+            },
+            "description": "Solo puedes modificar tu propia cuenta. El ID debe coincidir con el del token."
+          }
+        },
+        {
+          "name": "Desactivar mi cuenta",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "usuarios", "1"]
+            },
+            "description": "Solo puedes desactivar tu propia cuenta."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Publicaciones",
+      "item": [
+        {
+          "name": "Crear publicación",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Calculadora científica\",\n  \"descripcion\": \"En buen estado, poco uso\",\n  \"precio\": 150.00,\n  \"estado\": \"usado\",\n  \"categoria\": { \"id\": 1 }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/publicaciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "publicaciones"]
+            },
+            "description": "El vendedor se toma del token JWT automáticamente. Ya no se manda vendedorId en la URL."
+          }
+        },
+        {
+          "name": "Feed principal",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/publicaciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "publicaciones"]
+            }
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/publicaciones/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "publicaciones", "1"]
+            }
+          }
+        },
+        {
+          "name": "Publicaciones de un vendedor",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/publicaciones/vendedor/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "publicaciones", "vendedor", "1"]
+            }
+          }
+        },
+        {
+          "name": "Buscar por título",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/publicaciones/buscar?termino=calculo",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "publicaciones", "buscar"],
+              "query": [{ "key": "termino", "value": "calculo" }]
+            }
+          }
+        },
+        {
+          "name": "Desactivar publicación",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/publicaciones/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "publicaciones", "1"]
+            },
+            "description": "El vendedor se verifica desde el token. Solo puedes desactivar tus propias publicaciones."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Imágenes",
+      "item": [
+        {
+          "name": "Subir imagen suelta",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "archivo", "type": "file", "src": "" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/imagenes/subir",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "imagenes", "subir"]
+            },
+            "description": "Sube una imagen a Cloudinary y devuelve el URL. Solo acepta archivos image/*."
+          }
+        },
+        {
+          "name": "Subir imágenes a publicación",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "archivos", "type": "file", "src": [] }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/imagenes/publicacion/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "imagenes", "publicacion", "1"]
+            },
+            "description": "Máximo 5 imágenes. Solo el dueño de la publicación puede subir imágenes a ella."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "Crear categoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Libros\",\n  \"descripcion\": \"Libros universitarios y de texto\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias"]
+            }
+          }
+        },
+        {
+          "name": "Obtener todas",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias"]
+            }
+          }
+        },
+        {
+          "name": "Obtener por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar categoría",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Libros y apuntes\",\n  \"descripcion\": \"Libros, apuntes y material de estudio\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar categoría",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categorias", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mensajes",
+      "item": [
+        {
+          "name": "Enviar mensaje",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contenido\": \"Hola, ¿sigue disponible?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/mensajes?destinatarioId=2&publicacionId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "mensajes"],
+              "query": [
+                { "key": "destinatarioId", "value": "2" },
+                { "key": "publicacionId", "value": "1" }
+              ]
+            },
+            "description": "El remitente se toma del token JWT. Ya no se manda remitenteId. Ahora se requiere publicacionId."
+          }
+        },
+        {
+          "name": "Mi bandeja de entrada",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/mensajes/bandeja",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "mensajes", "bandeja"]
+            },
+            "description": "Devuelve los mensajes del usuario autenticado. Ya no se manda el ID en la URL."
+          }
+        },
+        {
+          "name": "Mensajes no leídos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/mensajes/noleidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "mensajes", "noleidos"]
+            },
+            "description": "Devuelve el conteo de mensajes no leídos del usuario autenticado."
+          }
+        },
+        {
+          "name": "Marcar como leído",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/mensajes/1/leido",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "mensajes", "1", "leido"]
+            },
+            "description": "Solo el destinatario del mensaje puede marcarlo como leído."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reseñas",
+      "item": [
+        {
+          "name": "Crear reseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"calificacion\": 5,\n  \"comentario\": \"Excelente vendedor, entrega rápida.\",\n  \"publicacion\": { \"id\": 1 }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/resenas?vendedorId=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "resenas"],
+              "query": [{ "key": "vendedorId", "value": "2" }]
+            },
+            "description": "El autor se toma del token JWT. Ya no se manda autorId. Calificación debe ser entre 1 y 5."
+          }
+        },
+        {
+          "name": "Reseñas de un vendedor",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/resenas/vendedor/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "resenas", "vendedor", "1"]
+            }
+          }
+        },
+        {
+          "name": "Promedio de calificación",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/resenas/promedio/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "resenas", "promedio", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
