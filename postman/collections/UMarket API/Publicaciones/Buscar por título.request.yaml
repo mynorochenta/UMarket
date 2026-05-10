@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/api/publicaciones/buscar?termino=calculo"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+queryParams:
+  termino: calculo
+order: 5000

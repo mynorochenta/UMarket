@@ -1,0 +1,13 @@
+$kind: http-request
+description: Máximo 5 imágenes. Solo el dueño de la publicación puede subir imágenes a ella.
+url: "{{baseUrl}}/api/imagenes/publicacion/1"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+body:
+  type: formdata
+  content:
+    - type: file
+      key: archivos
+      src: []
+order: 2000

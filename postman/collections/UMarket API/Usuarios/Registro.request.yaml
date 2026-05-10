@@ -1,0 +1,16 @@
+$kind: http-request
+description: Endpoint público. Envía un correo de verificación al email indicado.
+url: "{{baseUrl}}/api/usuarios/registro"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Tu Nombre",
+      "email": "tu_correo@usac.edu.gt",
+      "contrasena": "tu_contrasena",
+      "universidad": "Universidad de San Carlos de Guatemala"
+    }
+order: 1000

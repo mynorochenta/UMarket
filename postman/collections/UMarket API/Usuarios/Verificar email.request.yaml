@@ -1,0 +1,7 @@
+$kind: http-request
+description: Endpoint público. El token llega por correo.
+url: "{{baseUrl}}/api/usuarios/verificar?token=PEGA_AQUI_EL_TOKEN"
+method: GET
+queryParams:
+  token: PEGA_AQUI_EL_TOKEN
+order: 2000

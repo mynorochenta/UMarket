@@ -2,8 +2,8 @@ package com.UMarket.backend.controller;
 
 import com.UMarket.backend.dto.LoginRequest;
 import com.UMarket.backend.dto.LoginResponse;
-import com.UMarket.backend.model.Usuario;
-import com.UMarket.backend.repository.UsuarioRepository;
+import com.UMarket.backend.model.User;
+import com.UMarket.backend.repository.UserRepository;
 import com.UMarket.backend.security.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,42 +18,37 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UsuarioRepository usuarioRepository;
+    private final UserRepository userRepository;
 
     public AuthController(AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
-                          UsuarioRepository usuarioRepository) {
+                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.usuarioRepository = usuarioRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            // 1. Verificar email y contraseña
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContrasena())
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
 
-            // 2. Buscar el usuario en la base de datos
-            Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+            User user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow();
 
-            // 3. Verificar que el correo haya sido confirmado
-            if (!usuario.isVerificado()) {
+            if (!user.isVerified()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("Debes verificar tu correo antes de iniciar sesión");
+                        .body("You must verify your email before logging in");
             }
 
-            // 4. Generar el token JWT
-            String token = jwtUtil.generarToken(request.getEmail());
+            String token = jwtUtil.generateToken(request.getEmail());
 
-            // 5. Devolver el token junto con datos básicos del usuario
-            return ResponseEntity.ok(new LoginResponse(token, usuario.getEmail(), usuario.getId()));
+            return ResponseEntity.ok(new LoginResponse(token, user.getEmail(), user.getId()));
 
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email o contraseña incorrectos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
 }

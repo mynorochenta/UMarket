@@ -14,24 +14,22 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    private static final long EXPIRACION_MS = 86400000; // 24 horas en milisegundos
+    private static final long EXPIRATION_MS = 86400000; // 24 hours
 
     private Key getKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // Genera un token JWT para un email dado
-    public String generarToken(String email) {
+    public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRACION_MS))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Extrae el email del token
-    public String obtenerEmail(String token) {
+    public String extractEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build()
@@ -40,8 +38,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    // Valida que el token sea correcto y no esté vencido
-    public boolean validarToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token);
             return true;

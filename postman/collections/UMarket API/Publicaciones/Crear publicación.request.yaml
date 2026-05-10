@@ -1,0 +1,18 @@
+$kind: http-request
+description: El vendedor se toma del token JWT automáticamente. Ya no se manda vendedorId en la URL.
+url: "{{baseUrl}}/api/publicaciones"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "titulo": "Calculadora científica",
+      "descripcion": "En buen estado, poco uso",
+      "precio": 150.00,
+      "estado": "usado",
+      "categoria": { "id": 1 }
+    }
+order: 1000

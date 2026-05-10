@@ -1,0 +1,18 @@
+$kind: http-request
+description: El autor se toma del token JWT. Ya no se manda autorId. Calificación debe ser entre 1 y 5.
+url: "{{baseUrl}}/api/resenas?vendedorId=2"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+queryParams:
+  vendedorId: "2"
+body:
+  type: text
+  content: |-
+    {
+      "calificacion": 5,
+      "comentario": "Excelente vendedor, entrega rápida.",
+      "publicacion": { "id": 1 }
+    }
+order: 1000

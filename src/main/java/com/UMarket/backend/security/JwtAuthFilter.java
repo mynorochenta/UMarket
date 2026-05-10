@@ -30,28 +30,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. Leer el header "Authorization" del request
         String authHeader = request.getHeader("Authorization");
 
-        // 2. Si no tiene header o no empieza con "Bearer ", dejarlo pasar sin autenticar
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. Extraer el token (quitar el prefijo "Bearer ")
         String token = authHeader.substring(7);
 
-        // 4. Validar el token y autenticar al usuario
-        if (jwtUtil.validarToken(token)) {
-            String email = jwtUtil.obtenerEmail(token);
+        if (jwtUtil.validateToken(token)) {
+            String email = jwtUtil.extractEmail(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // 5. Decirle a Spring Security que este usuario está autenticado
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 

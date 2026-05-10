@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/categorias"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Libros",
+      "descripcion": "Libros universitarios y de texto"
+    }
+order: 1000

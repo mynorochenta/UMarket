@@ -26,25 +26,24 @@ public class CloudinaryService {
         ));
     }
 
-    public String subirImagen(MultipartFile archivo) throws IOException {
-        String contentType = archivo.getContentType();
+    public String uploadImage(MultipartFile file) throws IOException {
+        String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("Solo se permiten archivos de imagen");
+            throw new IllegalArgumentException("Only image files are allowed");
         }
 
-        Map resultado = cloudinary.uploader().upload(
-                archivo.getBytes(),
+        Map result = cloudinary.uploader().upload(
+                file.getBytes(),
                 ObjectUtils.asMap(
-                        "folder", "umarket",        // Se guarda en carpeta umarket
+                        "folder", "umarket",
                         "resource_type", "image"
                 )
         );
 
-        // Devolver el link público de la imagen
-        return resultado.get("secure_url").toString();
+        return result.get("secure_url").toString();
     }
 
-    public void eliminarImagen(String publicId) throws IOException {
+    public void deleteImage(String publicId) throws IOException {
         cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
     }
 }

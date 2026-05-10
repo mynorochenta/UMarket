@@ -1,0 +1,7 @@
+$kind: http-request
+description: Devuelve el conteo de mensajes no leídos del usuario autenticado.
+url: "{{baseUrl}}/api/mensajes/noleidos"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+order: 3000

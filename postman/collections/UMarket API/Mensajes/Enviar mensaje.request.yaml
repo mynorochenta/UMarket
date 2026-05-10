@@ -1,0 +1,17 @@
+$kind: http-request
+description: El remitente se toma del token JWT. Ya no se manda remitenteId. Ahora se requiere publicacionId.
+url: "{{baseUrl}}/api/mensajes?destinatarioId=2&publicacionId=1"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+queryParams:
+  destinatarioId: "2"
+  publicacionId: "1"
+body:
+  type: text
+  content: |-
+    {
+      "contenido": "Hola, ¿sigue disponible?"
+    }
+order: 1000

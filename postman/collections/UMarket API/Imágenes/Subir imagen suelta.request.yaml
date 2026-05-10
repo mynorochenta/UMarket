@@ -1,0 +1,13 @@
+$kind: http-request
+description: Sube una imagen a Cloudinary y devuelve el URL. Solo acepta archivos image/*.
+url: "{{baseUrl}}/api/imagenes/subir"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+body:
+  type: formdata
+  content:
+    - type: file
+      key: archivo
+      src: ""
+order: 1000
