@@ -26,7 +26,6 @@ public class UserController {
             user.setName(request.getName());
             user.setEmail(request.getEmail());
             user.setPassword(request.getPassword());
-            user.setUniversity(request.getUniversity());
             User created = userService.register(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (RuntimeException e) {

@@ -27,7 +27,14 @@
       "Bash(git commit *)",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
       "Bash(del model\\\\Usuario.java model\\\\Publicacion.java model\\\\Categoria.java model\\\\Mensaje.java model\\\\Resena.java model\\\\ImagenPublicacion.java repository\\\\UsuarioRepository.java repository\\\\PublicacionRepository.java repository\\\\CategoriaRepository.java repository\\\\MensajeRepository.java repository\\\\ResenaRepository.java repository\\\\ImagenPublicacionRepository.java service\\\\UsuarioService.java service\\\\PublicacionService.java service\\\\CategoriaService.java service\\\\MensajeService.java service\\\\ResenaService.java controller\\\\UsuarioController.java controller\\\\PublicacionController.java controller\\\\CategoriaController.java controller\\\\MensajeController.java controller\\\\ResenaController.java controller\\\\ImagenController.java)",
-      "Bash(./mvnw.cmd clean *)"
+      "Bash(./mvnw.cmd clean *)",
+      "Bash(mysql *)",
+      "Bash(where mysql *)",
+      "Read(//c/Program Files/MySQL/**)",
+      "Bash(C:/Program Files/MySQL/MySQL Server 8.0/bin/mysql.exe *)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(./mvnw.cmd spring-boot:run)",
+      "PowerShell(Get-NetTCPConnection *)"
     ]
   }
 }

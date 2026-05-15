@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +29,9 @@ public class UserService {
         if (!isEducationalEmail(user.getEmail())) {
             throw new RuntimeException("Only institutional email addresses (.edu) are allowed");
         }
+
+        String domain = user.getEmail().toLowerCase().substring(user.getEmail().lastIndexOf("@") + 1);
+user.setUniversity(DOMAIN_TO_UNIVERSITY.get(domain));
 
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("This email is already registered");
@@ -81,6 +85,25 @@ public class UserService {
             "udavinci.edu.gt",
             "udeo.edu.gt",
             "ureg.edu.gt"
+    );
+
+    private static final Map<String, String> DOMAIN_TO_UNIVERSITY = Map.ofEntries(
+            Map.entry("usac.edu.gt",      "Universidad de San Carlos de Guatemala"),
+            Map.entry("galileo.edu",      "Universidad Galileo"),
+            Map.entry("uvg.edu.gt",       "Universidad del Valle de Guatemala"),
+            Map.entry("ufm.edu",          "Universidad Francisco Marroquín"),
+            Map.entry("umg.edu.gt",       "Universidad Mariano Gálvez"),
+            Map.entry("miumg.edu.gt",     "Universidad Mariano Gálvez"),
+            Map.entry("url.edu.gt",       "Universidad Rafael Landívar"),
+            Map.entry("unis.edu.gt",      "Universidad del Istmo"),
+            Map.entry("umes.edu.gt",      "Universidad Mesoamericana"),
+            Map.entry("upana.edu.gt",     "Universidad Panamericana"),
+            Map.entry("uni.edu.gt",       "Universidad InterNaciones"),
+            Map.entry("urural.edu.gt",    "Universidad Rural"),
+            Map.entry("usanpablo.edu.gt", "Universidad de San Pablo"),
+            Map.entry("udavinci.edu.gt",  "Universidad Da Vinci"),
+            Map.entry("udeo.edu.gt",      "Universidad de Occidente"),
+            Map.entry("ureg.edu.gt",      "Universidad Regional")
     );
 
     private boolean isEducationalEmail(String email) {

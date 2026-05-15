@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,6 +44,12 @@ public class SecurityConfig {
                                 "/api/users/register",
                                 "/api/users/verify",
                                 "/api/auth/login"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/listings",
+                                "/api/listings/**",
+                                "/api/categories",
+                                "/api/categories/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
