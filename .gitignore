@@ -34,3 +34,5 @@ build/
 
 ### Archivos sensibles — nunca subir a GitHub ###
 src/main/resources/application.properties
+.claude/settings.local.json
+sesion_resumen.txt
